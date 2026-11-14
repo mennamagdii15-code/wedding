@@ -49,6 +49,7 @@ p{font-size:1.25rem;line-height:1.6}
 </style>
 </head>
 <body>
+<audio id="song" src="music.m4a" loop preload="auto"></audio>
 <button id="mute" aria-label="Toggle music">♪</button>
 
 <div id="intro">
@@ -137,12 +138,13 @@ function start(){
   },640);
 }
 function stop(){playing=false;clearInterval(timer);$("mute").textContent="✕"}
-$("mute").onclick=()=>playing?stop():start();
+let useSong=false;
+$("mute").onclick=()=>{const g=$("song");if(useSong){if(g.paused){g.play();$("mute").textContent="♪"}else{g.pause();$("mute").textContent="✕"}}else playing?stop():start()};
 
 $("env").onclick=()=>{
   if($("env").classList.contains("open"))return;
   $("env").classList.add("open");
-  try{start()}catch(e){}
+  $("song").play().then(()=>{useSong=true;$("mute").textContent="♪"}).catch(()=>{try{start()}catch(e){}});
   $("mute").style.display="block";
   setTimeout(()=>{$("intro").classList.add("gone");$("main").classList.add("show")},2100);
 };
